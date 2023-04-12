@@ -1,25 +1,33 @@
 import { atom, selector } from "recoil";
+import { recoilPersist } from "recoil-persist";
 
-export enum Categories {
-  "TO_DO" = "TO_DO",
-  "DOING" = "DOING",
-  "DONE" = "DONE",
-}
+const { persistAtom } = recoilPersist({
+  key: "recoil-persist",
+  storage: localStorage,
+});
 
 export interface IToDo {
   text: string;
   id: number;
-  category: Categories;
+  category: string;
 }
 
-export const categoryState = atom<Categories>({
+export const categoryState = atom<string>({
   key: "category",
-  default: Categories.TO_DO,
+  default: "TO DO",
+  effects: [persistAtom],
+});
+
+export const categoriesState = atom<string[]>({
+  key: "categories",
+  default: ["TO DO", "DOING", "DONE"],
+  effects: [persistAtom],
 });
 
 export const toDoState = atom<IToDo[]>({
-  key: "toDO",
+  key: "toDo",
   default: [],
+  effects: [persistAtom],
 });
 
 export const toDoSelector = selector({
